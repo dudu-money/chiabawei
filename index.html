@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>呷飽未</title>
+<meta name="description" content="民以食為天，與其天天煩惱，不如來找找。">
+<meta name="theme-color" content="#376b6d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="呷飽未">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* 青綠底加燕麥米色的低彩度單色系，俐落現代字體。要換顏色只需改下面這些變數 */
+:root {
+  --bg: #376b6d;
+  --surface: #2f5c5e;
+  --ink: #f1ece0;
+  --muted: #d3e0dc;
+  --line: #4a7f80;
+  --accent: #e6dcc6;
+  --accent-ink: #1f4041;
+  --chip: #3f7375;
+  --tint: #285152;
+  --warm: #ecc9b0;
+  --font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+  padding-block: max(24px, env(safe-area-inset-top)) max(48px, env(safe-area-inset-bottom));
+  -webkit-text-size-adjust: 100%;
+}
+[hidden] { display: none !important; }
+.wrap { max-width: 1080px; margin-inline: auto; display: flex; flex-direction: column; gap: 18px; }
+h1 { font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1.15; margin: 0; font-weight: 900; letter-spacing: 0.02em; text-wrap: balance; }
+h2, h3 { font-weight: 700; margin: 0; }
+.lede { margin: 6px 0 0; color: var(--muted); max-width: 40em; }
+button, select, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.spacer { flex: 1 1 0; }
+.muted { color: var(--muted); }
+
+.btn { padding: 9px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-weight: 500; text-decoration: none; display: inline-block; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.small { padding: 5px 12px; font-size: 0.9rem; }
+h1, h2, h3 { color: var(--accent); }
+.btn, a.btn.link { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.tag { color: var(--ink); }
+.input { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); min-width: 0; width: 100%; }
+.select { padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); max-width: 100%; }
+
+.acct { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+.panel form, .grid2 { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.full { grid-column: 1 / -1; }
+.f { display: flex; flex-direction: column; gap: 4px; font-weight: 500; min-width: 0; }
+.cats { display: flex; flex-wrap: wrap; gap: 8px 14px; border: 0; margin: 0; padding: 0; }
+.cats legend { font-weight: 500; margin-bottom: 6px; padding: 0; }
+.check { display: inline-flex; gap: 6px; align-items: center; }
+.msg { color: var(--warm); margin: 0; min-height: 1.4em; }
+.banner { background: var(--tint); border-radius: 12px; padding: 12px 14px; }
+
+.tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
+.tab { padding: 10px 16px; border: 0; background: transparent; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+.search { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.search::placeholder { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 7px 16px; border-radius: 999px; border: 1px solid transparent; background: var(--chip); font-weight: 500; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+.pick { background: var(--tint); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.pick h2 { font-size: 1.5rem; }
+.count { color: var(--muted); margin: 0; }
+.grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { font-size: 1.15rem; line-height: 1.3; overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 0.78rem; padding: 1px 9px; border-radius: 999px; background: var(--chip); color: var(--muted); letter-spacing: 0.04em; }
+.meta { margin: 0; display: grid; gap: 2px; color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+.meta strong { color: var(--ink); font-weight: 500; }
+.note { margin: 0; overflow-wrap: anywhere; }
+.card .acts, .pick .acts { margin-top: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.empty { padding: 28px 8px; color: var(--muted); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: max(20px, env(safe-area-inset-bottom)); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; max-width: calc(100% - 32px); z-index: 10; }
+footer { color: var(--muted); font-size: 0.85rem; max-width: 46em; }
+footer p { margin: 0 0 6px; }
+@media (max-width: 560px) {
+  .panel form, .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .spacer { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>呷飽未</h1>
+    <p class="lede">民以食為天，與其天天煩惱，不如來找找</p>
+    <div class="row" id="now" style="margin-top:12px"></div>
+  </header>
+
+  <section class="acct" id="acct" aria-label="帳號與清單"></section>
+  <section class="banner" id="joinBanner" hidden></section>
+  <section class="panel" id="authPanel" hidden aria-label="登入或註冊"></section>
+
+  <div class="tabs" role="tablist" aria-label="清單">
+    <button class="tab" role="tab" id="tabRec" aria-selected="true" type="button">推薦店家</button>
+    <button class="tab" role="tab" id="tabMine" aria-selected="false" type="button">我的清單</button>
+  </div>
+
+  <section class="row" style="flex-direction:column;align-items:stretch" aria-label="篩選">
+    <input class="search" id="q" type="search" placeholder="搜尋店名，區域，或想吃的東西，例如 蛋餅，牛肉麵，旗津" autocomplete="off">
+    <div class="chips" id="chips" role="group" aria-label="餐別"></div>
+    <div class="row">
+      <select class="select" id="city" aria-label="縣市" hidden></select>
+      <select class="select" id="district" aria-label="行政區"></select>
+      <span class="spacer"></span>
+      <button class="btn" id="addToggle" type="button" aria-expanded="false" aria-controls="addPanel" hidden>新增店家</button>
+      <button class="btn primary" id="pickBtn" type="button">幫我選一家</button>
+    </div>
+  </section>
+
+  <section class="pick" id="pick" hidden aria-live="polite"></section>
+
+  <section class="panel" id="addPanel" hidden>
+    <form id="addForm" autocomplete="off">
+      <label class="f">店名
+        <input class="input" type="text" id="fName" maxlength="40" required>
+      </label>
+      <label class="f">縣市
+        <input class="input" type="text" id="fCity" list="cityList" maxlength="8" placeholder="例如 台南市">
+        <datalist id="cityList"></datalist>
+      </label>
+      <label class="f">行政區（選填）
+        <input class="input" type="text" id="fDistrict" list="districtList" maxlength="10" placeholder="例如 安平區">
+        <datalist id="districtList"></datalist>
+      </label>
+      <label class="f">地址或位置（選填）
+        <input class="input" type="text" id="fAddr" maxlength="80">
+      </label>
+      <fieldset class="cats full" id="fCats"><legend>分類（可複選）</legend></fieldset>
+      <label class="f full">備註，想點什麼（選填）
+        <input class="input" type="text" id="fNote" maxlength="80">
+      </label>
+      <div class="full row">
+        <button class="btn primary" type="submit">加入清單</button>
+        <p class="msg" id="addMsg" role="status"></p>
+      </div>
+    </form>
+  </section>
+
+  <p class="count" id="count"></p>
+  <ul class="grid" id="list"></ul>
+
+  <footer>
+    <p>推薦店家目前收錄高雄，整理自食尚玩家，美人圈等公開介紹。其他縣市的店可以自己加進「我的清單」。營業時間，價格與公休日可能變動，出門前請在 Google 地圖確認。</p>
+    <p id="modeNote"></p>
+  </footer>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script type="module">
+import { firebaseConfig } from "./firebase-config.js";
+
+const CATS = ["早餐", "午餐", "晚餐", "小吃", "下午茶", "飲料", "咖啡廳"];
+const FB_VER = "10.12.2";
+const LS_LOCAL = "kh-local-places-v1";
+const LS_LIST = "kh-current-list-v1";
+
+// n 店名，c 分類，d 行政區，a 地址，h 營業時間，t 備註，tel 電話
+const BASE = [
+  { n: "興隆居", c: ["早餐", "小吃"], d: "前金區", a: "前金區六合二路186號", h: "週三至日 04:00–11:30，週一二休", t: "一甲子的早餐老店，湯包和燒餅夾油條是招牌。一早就排隊，每人約 100 元內吃飽。", tel: "07-261-6787" },
+  { n: "原味輕食早餐 左營店", c: ["早餐", "午餐"], d: "左營區", a: "左營區政德路607號", h: "週二至日 06:00–14:00，週一休", t: "拼盤早午餐，義大利麵，吐司，蛋餅都有，也吃得到高雄特有的鍋燒意麵。", tel: "07-345-5910" },
+  { n: "碼頭阿姨蛋餅", c: ["早餐"], d: "鼓山區", a: "鼓山區鼓山一路5號之1", h: "每日 06:00–11:59", t: "古早味蛋餅，列在高雄早餐名單裡。" },
+  { n: "包子叔叔", c: ["早餐", "小吃"], d: "前金區", a: "前金區大同二路54-2號", h: "週二至四 07:30–13:00，15:00–17:30，週一休", t: "包子專賣，下午也有開。" },
+  { n: "老江紅茶牛奶", c: ["飲料", "早餐"], d: "新興區", a: "新興區南台路51號", h: "24 小時營業", t: "紅茶牛奶專賣，半夜也買得到。" },
+  { n: "哈囉市場蓁牛雜湯", c: ["早餐", "午餐", "小吃"], d: "左營區", a: "左營區左營下路（市場內）", h: "", t: "溫體牛熬的牛雜湯，喝到一半老闆會問要不要免費加湯。牛肉熱炒均一價，可配滷肉飯。" },
+  { n: "早．迷鹿 Morning Deer", c: ["早餐", "下午茶", "咖啡廳"], d: "鳳山區", a: "大東文化藝術中心附近", h: "", t: "歐式鄉村風的早午餐店。" },
+  { n: "好夥伴咖啡", c: ["咖啡廳"], d: "三民區", a: "三民區文安南街170號", h: "每日 09:00–21:00", t: "營業到晚上，適合下班後坐一下。" },
+  { n: "公寓咖啡", c: ["咖啡廳", "下午茶"], d: "前金區", a: "前金區仁義街227號", h: "11:30–23:30", t: "老屋咖啡館，附近一整排咖啡館，有戶外座位。", tel: "07-215-7176" },
+  { n: "海嘯咖啡 HI HSIAO CAFE", c: ["咖啡廳", "下午茶"], d: "鼓山區", a: "鼓山區哨船街51號1樓", h: "11:00–18:00，週一二休", t: "西子灣海景咖啡廳，主打 Croffle 和 Crosand，甜鹹都有。" },
+  { n: "旗津 tha̍k 册", c: ["咖啡廳"], d: "旗津區", a: "旗津區中洲巷140-3號", h: "10:00–20:00", t: "旗津的特色咖啡廳，搭渡輪過去順路。" },
+  { n: "海之星沙灘俱樂部", c: ["咖啡廳", "下午茶", "晚餐"], d: "旗津區", a: "旗津區旗津三路887號", h: "12:00–21:00，週一休", t: "南洋風，下午看夕陽，晚上也能小酌。" },
+  { n: "荷俚特咖啡", c: ["咖啡廳", "午餐", "下午茶"], d: "苓雅區", a: "苓雅區光華一路355號", h: "", t: "簡餐，排餐，義大利麵，燉飯和火鍋都有，單品黑咖啡可無限續杯。", tel: "07-222-0702" },
+  { n: "希望奶茶 finding hope", c: ["飲料"], d: "苓雅區", a: "苓雅區興中一路371號", h: "10:00–21:00，週日 11:00 起", t: "小農鮮奶配手炒蔗糖，「忘憂奶茶」是人氣款，奶類飲品可免費加粉角或珍珠。", tel: "07-338-3011" },
+  { n: "阿婆彈珠汽水綜合茶", c: ["飲料", "下午茶"], d: "鹽埕區", a: "鹽埕區大勇路131號（土地銀行旁）", h: "約 12:00–22:00", t: "梅子茶，冬瓜茶，加一整瓶彈珠汽水的綜合茶，700cc 約 45 元（2024 年資料）。" },
+  { n: "鹽埕奶茶一條街", c: ["飲料"], d: "鹽埕區", a: "", h: "", t: "鹽埕有好幾家奶茶店聚在一起，逛駁二時順路買一杯。" },
+  { n: "花葵壽喜", c: ["晚餐", "午餐"], d: "前金區", a: "前金區自強一路96巷28號", h: "週一至四 17:00–22:10，週五至日 11:30–15:00，17:00–22:10", t: "平日只開晚餐，週末午晚餐都有。" },
+  { n: "寒軒國際大飯店 40 樓", c: ["晚餐", "午餐"], d: "苓雅區", a: "苓雅區四維三路33號40樓", h: "11:30–14:00，17:30–21:00", t: "高樓層餐廳，適合慶祝或請客。" },
+  { n: "六合夜市", c: ["晚餐", "小吃"], d: "前金區", a: "前金區六合二路", h: "", t: "木瓜牛奶，鐵板炒飯，生炒鱔魚意麵，銅板價小鼎泰豐，都是常被提到的攤位。" },
+  { n: "瑞豐夜市", c: ["晚餐", "小吃"], d: "左營區", a: "左營區裕誠路一帶", h: "", t: "雞排和造型雞蛋仔是人氣攤，攤位很多，適合邊走邊吃。" },
+  { n: "廖家黑輪", c: ["小吃", "下午茶"], d: "三民區", a: "三民區三民街（三民市場內）", h: "", t: "六十年老字號。人氣三寶 50 元，有烤黑輪片，烤黑輪條，烤米血。也有關東煮。" },
+  { n: "黃家水餃", c: ["小吃", "午餐"], d: "鹽埕區", a: "", h: "", t: "每天現包的手工水餃，每顆約 4 元（2024 年資料），另有 20 至 30 元的湯品。" },
+  { n: "鬍鬚烤玉米", c: ["小吃", "下午茶"], d: "鹽埕區", a: "高雄武廟周邊", h: "", t: "一支 50 元，刷獨門醬料烤，帶焦香和白芝麻香。" },
+  { n: "港園牛肉麵", c: ["午餐", "晚餐"], d: "鹽埕區", a: "", h: "", t: "鹽埕區的人氣牛肉麵。" },
+  { n: "旗津渡輪周邊小吃", c: ["小吃", "午餐"], d: "旗津區", a: "旗津老街一帶", h: "", t: "搭渡輪過去吃蕃薯椪，手工狗母魚麵，炭烤中藥小卷。" }
+];
+BASE.forEach((x) => { x.city = "高雄市"; });
+
+const TW_CITIES = ["台北市", "新北市", "基隆市", "桃園市", "新竹市", "新竹縣", "苗栗縣", "台中市", "彰化縣", "南投縣", "雲林縣", "嘉義市", "嘉義縣", "台南市", "高雄市", "屏東縣", "宜蘭縣", "花蓮縣", "台東縣", "澎湖縣", "金門縣", "連江縣"];
+const LS_CITY = "kh-last-city-v1";
+function lastCity() { try { return localStorage.getItem(LS_CITY) || "高雄市"; } catch (e) { return "高雄市"; } }
+
+const state = {
+  tab: "rec", cat: "全部", city: "全部", district: "全部", q: "", lastPick: null,
+  user: null, lists: [], listId: null, cloudPlaces: [], localPlaces: loadLocal(),
+  pendingJoin: new URLSearchParams(location.search).get("join"), creating: false
+};
+let fb = null;           // 連上 Firebase 之後才有值
+let unsubLists = null, unsubPlaces = null;
+
+const $ = (id) => document.getElementById(id);
+function el(tag, attrs, ...kids) {
+  const node = document.createElement(tag);
+  if (attrs) for (const k of Object.keys(attrs)) {
+    if (k === "text") node.textContent = attrs[k];
+    else if (k === "class") node.className = attrs[k];
+    else node.setAttribute(k, attrs[k]);
+  }
+  for (const c of kids) if (c) node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  return node;
+}
+function loadLocal() {
+  try { const a = JSON.parse(localStorage.getItem(LS_LOCAL) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+}
+function saveLocal() { try { localStorage.setItem(LS_LOCAL, JSON.stringify(state.localPlaces)); return true; } catch (e) { return false; } }
+let toastTimer = null;
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 3500);
+}
+
+const cloudOn = () => !!(fb && state.user && state.listId);
+const minePlaces = () => cloudOn() ? state.cloudPlaces : state.localPlaces;
+const currentList = () => state.lists.find((l) => l.id === state.listId) || null;
+
+function mapUrl(s) {
+  const q = (s.city ? s.city + " " : "") + s.n + (s.a ? " " + s.a : "");
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+}
+function matches(s) {
+  if (state.cat !== "全部" && s.c.indexOf(state.cat) < 0) return false;
+  if (state.city !== "全部" && (s.city || "") !== state.city) return false;
+  if (state.district !== "全部" && s.d !== state.district) return false;
+  if (state.q) {
+    const hay = (s.n + " " + (s.city || "") + " " + (s.d || "") + " " + (s.a || "") + " " + (s.t || "") + " " + s.c.join(" ")).toLowerCase();
+    const parts = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    for (const p of parts) if (hay.indexOf(p) < 0) return false;
+  }
+  return true;
+}
+const currentRows = () => (state.tab === "rec" ? BASE : minePlaces()).filter(matches);
+
+/* ---------- 顯示 ---------- */
+function card(s, isMine) {
+  const tags = el("div", { class: "tags" });
+  s.c.forEach((c) => tags.appendChild(el("span", { class: "tag", text: c })));
+  const meta = el("p", { class: "meta" });
+  let place = (s.city || "") + (s.d || "");
+  if (s.a) {
+    if (s.d && s.a.indexOf(s.d) === 0) place = (s.city || "") + s.a;
+    else place += (place ? "，" : "") + s.a;
+  }
+  if (place) meta.appendChild(el("span", { text: place }));
+  if (s.h) meta.appendChild(el("span", null, el("strong", { text: "營業 " }), s.h));
+  if (s.tel) meta.appendChild(el("span", null, el("strong", { text: "電話 " }), s.tel));
+  if (isMine && s.by) meta.appendChild(el("span", { text: "由 " + s.by + " 加入" }));
+
+  const acts = el("div", { class: "acts" });
+  acts.appendChild(el("a", { class: "btn small link", href: mapUrl(s), target: "_blank", rel: "noopener noreferrer", text: "開 Google 地圖" }));
+  if (isMine) {
+    const del = el("button", { class: "btn small", type: "button", text: "刪除" });
+    let armed = false, timer = null;
+    del.addEventListener("click", async () => {
+      if (!armed) {
+        armed = true; del.textContent = "再按一次確定刪除";
+        timer = setTimeout(() => { armed = false; del.textContent = "刪除"; }, 3000);
+        return;
+      }
+      clearTimeout(timer);
+      await removePlace(s.id);
+    });
+    acts.appendChild(del);
+  } else {
+    const add = el("button", { class: "btn small primary", type: "button", text: "加入我的清單" });
+    add.addEventListener("click", () => addFromBase(s));
+    acts.appendChild(add);
+  }
+  const li = el("li", { class: "card" }, el("h3", { text: s.n }), tags, meta);
+  if (s.t) li.appendChild(el("p", { class: "note", text: s.t }));
+  li.appendChild(acts);
+  return li;
+}
+
+function renderList() {
+  const list = $("list"); list.textContent = "";
+  const rows = currentRows();
+  rows.forEach((s) => list.appendChild(card(s, state.tab === "mine")));
+  $("count").textContent = "顯示 " + rows.length + " 家";
+  if (!rows.length) {
+    let msg = "沒有符合的店家，換個分類或搜尋字詞看看。";
+    if (state.tab === "mine" && !minePlaces().length) msg = "清單還是空的。到「推薦店家」按「加入我的清單」，或按「新增店家」輸入自己知道的店。";
+    list.appendChild(el("li", { class: "empty", text: msg }));
+  }
+}
+function renderChips() {
+  const box = $("chips"); box.textContent = "";
+  ["全部"].concat(CATS).forEach((c) => {
+    const b = el("button", { class: "chip", type: "button", "aria-pressed": String(state.cat === c), text: c });
+    b.addEventListener("click", () => { state.cat = c; renderAll(); });
+    box.appendChild(b);
+  });
+}
+function renderCities() {
+  const all = BASE.concat(minePlaces());
+  const set = {};
+  all.forEach((s) => { if (s.city) set[s.city] = true; });
+  const names = Object.keys(set);
+  if (state.city !== "全部" && !set[state.city]) state.city = "全部";
+  const sel = $("city");
+  sel.hidden = names.length < 2;
+  sel.textContent = "";
+  ["全部"].concat(names).forEach((c) => {
+    const o = el("option", { value: c, text: c === "全部" ? "所有縣市" : c });
+    if (c === state.city) o.selected = true;
+    sel.appendChild(o);
+  });
+  const dl = $("cityList"); dl.textContent = "";
+  TW_CITIES.forEach((c) => dl.appendChild(el("option", { value: c })));
+}
+function renderDistricts() {
+  const set = {};
+  const all = BASE.concat(minePlaces());
+  all.forEach((s) => { if (s.d && (state.city === "全部" || (s.city || "") === state.city)) set[s.d] = true; });
+  const names = Object.keys(set);
+  if (state.district !== "全部" && !set[state.district]) state.district = "全部";
+  const sel = $("district"); sel.textContent = "";
+  ["全部"].concat(names).forEach((d) => {
+    const o = el("option", { value: d, text: d === "全部" ? "所有行政區" : d });
+    if (d === state.district) o.selected = true;
+    sel.appendChild(o);
+  });
+  const dl = $("districtList"); dl.textContent = "";
+  const seen = {};
+  all.forEach((s) => { if (s.d && !seen[s.d]) { seen[s.d] = true; dl.appendChild(el("option", { value: s.d })); } });
+}
+function renderTabs() {
+  const rec = state.tab === "rec";
+  $("tabRec").setAttribute("aria-selected", String(rec));
+  $("tabMine").setAttribute("aria-selected", String(!rec));
+  $("tabMine").textContent = "我的清單（" + minePlaces().length + "）";
+  $("addToggle").hidden = rec;
+  if (rec) { $("addPanel").hidden = true; $("addToggle").setAttribute("aria-expanded", "false"); }
+}
+function renderNow() {
+  const d = new Date();
+  const h = d.getHours();
+  const slot = h >= 5 && h < 10 ? "早餐" : h >= 10 && h < 14 ? "午餐" : h >= 14 && h < 17 ? "下午茶" : h >= 17 && h < 21 ? "晚餐" : "小吃";
+  const word = slot === "小吃" ? "宵夜小吃" : slot;
+  const box = $("now"); box.textContent = "";
+  box.appendChild(el("span", { text: "現在 " + ("0" + h).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + "，適合吃" + word }));
+  const b = el("button", { class: "btn small", type: "button", text: "只看" + word });
+  b.addEventListener("click", () => { state.cat = slot; renderAll(); });
+  box.appendChild(b);
+}
+
+function renderAcct() {
+  const box = $("acct"); box.textContent = "";
+  if (!fb) {
+    box.appendChild(el("p", { class: "muted", style: "margin:0", text: "目前是單機模式，清單只存在這支手機的瀏覽器裡。" }));
+    $("modeNote").textContent = "共用功能尚未開啟，清單只存在這個瀏覽器，清除網站資料就會消失。";
+    return;
+  }
+  if (!state.user) {
+    const r = el("div", { class: "row" });
+    r.appendChild(el("span", { class: "muted", text: "登入後可以建立清單，和家人朋友共用。" }));
+    r.appendChild(el("span", { class: "spacer" }));
+    const b = el("button", { class: "btn primary small", type: "button", text: "登入或註冊" });
+    b.addEventListener("click", () => showAuth(true));
+    r.appendChild(b);
+    box.appendChild(r);
+    $("modeNote").textContent = "未登入時，清單只存在這個瀏覽器，清除網站資料就會消失。";
+    return;
+  }
+  const name = state.user.displayName || (state.user.email || "").split("@")[0];
+  const r1 = el("div", { class: "row" });
+  r1.appendChild(el("span", { text: "你好，" + name }));
+  r1.appendChild(el("span", { class: "spacer" }));
+  const out = el("button", { class: "btn small", type: "button", text: "登出" });
+  out.addEventListener("click", () => fb.A.signOut(fb.auth));
+  r1.appendChild(out);
+  box.appendChild(r1);
+
+  const r2 = el("div", { class: "row" });
+  const sel = el("select", { class: "select", id: "listSel", "aria-label": "目前的清單" });
+  state.lists.forEach((l) => {
+    const o = el("option", { value: l.id, text: l.name + "（" + l.members.length + " 人）" });
+    if (l.id === state.listId) o.selected = true;
+    sel.appendChild(o);
+  });
+  sel.addEventListener("change", () => { setList(sel.value); });
+  r2.appendChild(sel);
+  const share = el("button", { class: "btn small", type: "button", text: "分享連結" });
+  share.addEventListener("click", shareList);
+  const nw = el("button", { class: "btn small", type: "button", text: "新增清單" });
+  nw.addEventListener("click", () => { $("newListRow").hidden = !$("newListRow").hidden; if (!$("newListRow").hidden) $("newListName").focus(); });
+  r2.appendChild(share); r2.appendChild(nw);
+  box.appendChild(r2);
+
+  const r3 = el("form", { class: "row", id: "newListRow", hidden: "" },
+    el("input", { class: "input", id: "newListName", type: "text", maxlength: "20", placeholder: "清單名稱，例如 我和老公", style: "flex:1 1 180px;width:auto" }),
+    el("button", { class: "btn small primary", type: "submit", text: "建立" }));
+  r3.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const v = $("newListName").value.trim();
+    if (!v) return;
+    await createList(v, false);
+    r3.hidden = true; $("newListName").value = "";
+  });
+  box.appendChild(r3);
+  box.appendChild(el("div", { id: "shareBox", hidden: "" }));
+  $("modeNote").textContent = "清單存在雲端，同一份清單的成員都看得到，也都能新增和刪除。";
+}
+
+function renderAll() { renderAcct(); renderTabs(); renderChips(); renderCities(); renderDistricts(); renderList(); }
+
+/* ---------- 隨機挑選 ---------- */
+function pickOne() {
+  const rows = currentRows();
+  const box = $("pick"); box.textContent = ""; box.hidden = false;
+  if (!rows.length) { box.appendChild(el("p", { class: "muted", style: "margin:0", text: "目前的篩選下沒有店家可以抽，先放寬分類或行政區。" })); return; }
+  let s = rows[Math.floor(Math.random() * rows.length)];
+  if (rows.length > 1 && state.lastPick === s.n) s = rows[(rows.indexOf(s) + 1) % rows.length];
+  state.lastPick = s.n;
+  const scope = (state.cat === "全部" ? "全部分類" : state.cat) + (state.city === "全部" ? "" : "，" + state.city) + (state.district === "全部" ? "" : "，" + state.district);
+  box.appendChild(el("span", { class: "muted", text: "從 " + rows.length + " 家（" + scope + "）裡抽到" }));
+  box.appendChild(el("h2", { text: s.n }));
+  const info = [];
+  const where = (s.city || "") + (s.d || "");
+  if (where) info.push(where);
+  if (s.h) info.push("營業 " + s.h);
+  if (info.length) box.appendChild(el("span", { class: "muted", text: info.join("，") }));
+  if (s.t) box.appendChild(el("p", { class: "note", text: s.t }));
+  const acts = el("div", { class: "acts" });
+  acts.appendChild(el("a", { class: "btn primary", href: mapUrl(s), target: "_blank", rel: "noopener noreferrer", text: "開 Google 地圖" }));
+  const again = el("button", { class: "btn", type: "button", text: "再抽一次" });
+  again.addEventListener("click", pickOne);
+  const close = el("button", { class: "btn", type: "button", text: "關閉" });
+  close.addEventListener("click", () => { box.hidden = true; });
+  acts.appendChild(again); acts.appendChild(close);
+  box.appendChild(acts);
+}
+
+/* ---------- 店家新增與刪除 ---------- */
+function myName() { return state.user ? (state.user.displayName || (state.user.email || "").split("@")[0]) : ""; }
+
+async function addPlace(p) {
+  if (minePlaces().some((x) => x.n === p.n && (x.city || "") === (p.city || ""))) { toast("「" + p.n + "」已經在清單裡了"); return false; }
+  if (cloudOn()) {
+    try {
+      await fb.F.addDoc(fb.F.collection(fb.db, "lists", state.listId, "places"), {
+        n: p.n, c: p.c, city: p.city || "", d: p.d || "", a: p.a || "", t: p.t || "", h: p.h || "", tel: p.tel || "",
+        addedBy: state.user.uid, addedByName: myName(), createdAtMs: Date.now()
+      });
+      return true;
+    } catch (e) { toast("沒辦法儲存，請檢查網路或登入狀態"); return false; }
+  }
+  state.localPlaces.unshift({ id: "l" + Date.now() + Math.floor(Math.random() * 1000), n: p.n, c: p.c, city: p.city || "", d: p.d || "", a: p.a || "", t: p.t || "", h: p.h || "", tel: p.tel || "" });
+  if (!saveLocal()) toast("這個瀏覽器無法儲存，重新整理後會消失");
+  renderAll();
+  return true;
+}
+async function addFromBase(s) {
+  const ok = await addPlace(s);
+  if (ok) toast("已加入「" + s.n + "」");
+}
+async function removePlace(id) {
+  if (cloudOn()) {
+    try { await fb.F.deleteDoc(fb.F.doc(fb.db, "lists", state.listId, "places", id)); }
+    catch (e) { toast("刪除失敗，請稍後再試"); }
+    return;
+  }
+  state.localPlaces = state.localPlaces.filter((x) => x.id !== id);
+  saveLocal(); renderAll();
+}
+
+const catBox = $("fCats");
+CATS.forEach((c, i) => catBox.appendChild(el("label", { class: "check" }, el("input", { type: "checkbox", id: "fc" + i, value: c }), c)));
+$("addToggle").addEventListener("click", function () {
+  const p = $("addPanel"); p.hidden = !p.hidden;
+  this.setAttribute("aria-expanded", String(!p.hidden));
+  if (!p.hidden) $("fName").focus();
+});
+$("addForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = $("addMsg");
+  const name = $("fName").value.trim();
+  const cats = CATS.filter((c, i) => $("fc" + i).checked);
+  if (!name) { msg.textContent = "請輸入店名。"; return; }
+  if (!cats.length) { msg.textContent = "至少選一個分類，才找得到它。"; return; }
+  const ok = await addPlace({
+    n: name, c: cats, city: $("fCity").value.trim(), d: $("fDistrict").value.trim(),
+    a: $("fAddr").value.trim(), t: $("fNote").value.trim()
+  });
+  msg.textContent = ok ? "已加入「" + name + "」。" : "";
+  if (ok) {
+    const c = $("fCity").value.trim();
+    if (c) { try { localStorage.setItem(LS_CITY, c); } catch (err) {} }
+    e.target.reset();
+    $("fCity").value = lastCity();
+  }
+});
+
+/* ---------- 分頁與篩選事件 ---------- */
+$("tabRec").addEventListener("click", () => { state.tab = "rec"; renderAll(); });
+$("tabMine").addEventListener("click", () => { state.tab = "mine"; renderAll(); });
+$("q").addEventListener("input", (e) => { state.q = e.target.value.trim(); renderList(); });
+$("city").addEventListener("change", (e) => { state.city = e.target.value; state.district = "全部"; renderAll(); });
+$("district").addEventListener("change", (e) => { state.district = e.target.value; renderList(); });
+$("pickBtn").addEventListener("click", pickOne);
+
+/* ---------- 登入與註冊 ---------- */
+const AUTH_ERR = {
+  "auth/invalid-email": "Email 格式不對。",
+  "auth/missing-password": "請輸入密碼。",
+  "auth/weak-password": "密碼至少要 6 個字。",
+  "auth/email-already-in-use": "這個 Email 已經註冊過，請改按「登入」。",
+  "auth/invalid-credential": "Email 或密碼不對。",
+  "auth/wrong-password": "Email 或密碼不對。",
+  "auth/user-not-found": "找不到這個帳號，請先註冊。",
+  "auth/too-many-requests": "試太多次了，請稍後再試。",
+  "auth/network-request-failed": "網路連不上，請檢查連線。",
+  "auth/operation-not-allowed": "這個專案還沒啟用 Email 登入，請照說明到 Firebase 打開。"
+};
+function showAuth(show) {
+  const p = $("authPanel");
+  p.hidden = !show;
+  if (!show) return;
+  p.textContent = "";
+  const form = el("form", { class: "grid2", autocomplete: "on" });
+  form.appendChild(el("label", { class: "f" }, "Email", el("input", { class: "input", id: "aEmail", type: "email", autocomplete: "email", required: "" })));
+  form.appendChild(el("label", { class: "f" }, "密碼（至少 6 個字）", el("input", { class: "input", id: "aPass", type: "password", autocomplete: "current-password", required: "" })));
+  form.appendChild(el("label", { class: "f full" }, "你的名稱（註冊時用，家人會看到）", el("input", { class: "input", id: "aName", type: "text", maxlength: "12", placeholder: "例如 小美" })));
+  const row = el("div", { class: "full row" });
+  const signin = el("button", { class: "btn primary", type: "submit", text: "登入" });
+  const signup = el("button", { class: "btn", type: "button", text: "註冊新帳號" });
+  const cancel = el("button", { class: "btn", type: "button", text: "取消" });
+  const msg = el("p", { class: "msg", id: "aMsg", role: "status" });
+  row.appendChild(signin); row.appendChild(signup); row.appendChild(cancel);
+  form.appendChild(row); form.appendChild(el("div", { class: "full" }, msg));
+  const run = async (fn) => {
+    msg.textContent = "處理中⋯⋯";
+    try { await fn(); showAuth(false); }
+    catch (e) { msg.textContent = AUTH_ERR[e && e.code] || "操作失敗，請稍後再試。"; }
+  };
+  form.addEventListener("submit", (e) => { e.preventDefault(); run(() => fb.A.signInWithEmailAndPassword(fb.auth, $("aEmail").value.trim(), $("aPass").value)); });
+  signup.addEventListener("click", () => run(async () => {
+    const cred = await fb.A.createUserWithEmailAndPassword(fb.auth, $("aEmail").value.trim(), $("aPass").value);
+    const nm = $("aName").value.trim();
+    if (nm) { await fb.A.updateProfile(cred.user, { displayName: nm }); state.user = fb.auth.currentUser; renderAll(); }
+  }));
+  cancel.addEventListener("click", () => showAuth(false));
+  p.appendChild(form);
+  $("aEmail").focus();
+}
+
+/* ---------- 雲端清單 ---------- */
+function setList(id) {
+  state.listId = id;
+  try { localStorage.setItem(LS_LIST, id); } catch (e) {}
+  subscribePlaces();
+  renderAll();
+}
+function subscribeLists() {
+  if (unsubLists) unsubLists();
+  const q = fb.F.query(fb.F.collection(fb.db, "lists"), fb.F.where("members", "array-contains", state.user.uid));
+  unsubLists = fb.F.onSnapshot(q, (snap) => {
+    state.lists = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAtMs || 0) - (b.createdAtMs || 0));
+    let want = state.listId;
+    if (!want) { try { want = localStorage.getItem(LS_LIST); } catch (e) {} }
+    if (!state.lists.some((l) => l.id === want)) want = state.lists.length ? state.lists[0].id : null;
+    const changed = want !== state.listId || !unsubPlaces;
+    state.listId = want;
+    if (changed) subscribePlaces();
+    if (!state.lists.length && !state.creating && !state.pendingJoin) createList("我的清單", true);
+    renderAll();
+  }, () => toast("讀不到清單，請確認 Firestore 規則已發布"));
+}
+function subscribePlaces() {
+  if (unsubPlaces) { unsubPlaces(); unsubPlaces = null; }
+  state.cloudPlaces = [];
+  if (!state.listId) return;
+  unsubPlaces = fb.F.onSnapshot(fb.F.collection(fb.db, "lists", state.listId, "places"), (snap) => {
+    state.cloudPlaces = snap.docs.map((d) => {
+      const x = d.data();
+      return { id: d.id, n: x.n, c: x.c || [], city: x.city || "", d: x.d, a: x.a, t: x.t, h: x.h, tel: x.tel, by: x.addedByName, at: x.createdAtMs || 0 };
+    }).sort((a, b) => b.at - a.at);
+    renderAll();
+  }, () => toast("讀不到店家，請確認 Firestore 規則已發布"));
+}
+async function createList(name, withLocal) {
+  state.creating = true;
+  try {
+    const ref = await fb.F.addDoc(fb.F.collection(fb.db, "lists"), {
+      name, ownerUid: state.user.uid, members: [state.user.uid], createdAtMs: Date.now()
+    });
+    if (withLocal && state.localPlaces.length) {
+      const batch = fb.F.writeBatch(fb.db);
+      state.localPlaces.forEach((p) => {
+        batch.set(fb.F.doc(fb.F.collection(fb.db, "lists", ref.id, "places")), {
+          n: p.n, c: p.c, city: p.city || "", d: p.d || "", a: p.a || "", t: p.t || "", h: p.h || "", tel: p.tel || "",
+          addedBy: state.user.uid, addedByName: myName(), createdAtMs: Date.now()
+        });
+      });
+      await batch.commit();
+      toast("已把這支手機原本的 " + state.localPlaces.length + " 家店搬進雲端清單");
+    }
+    setList(ref.id);
+  } catch (e) { toast("建立清單失敗，請確認 Firestore 規則已發布"); }
+  state.creating = false;
+}
+async function shareList() {
+  const l = currentList();
+  if (!l) return;
+  const url = location.origin + location.pathname + "?join=" + l.id;
+  const box = $("shareBox"); box.textContent = ""; box.hidden = false;
+  const input = el("input", { class: "input", type: "text", readonly: "", value: url, "aria-label": "邀請連結" });
+  const copy = el("button", { class: "btn small primary", type: "button", text: "複製連結" });
+  copy.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(url); toast("已複製，貼給家人朋友就行"); }
+    catch (e) { input.focus(); input.select(); toast("請長按選取後複製"); }
+  });
+  box.appendChild(el("p", { class: "muted", style: "margin:0 0 6px", text: "拿到連結的人登入後就會加入「" + l.name + "」，請只傳給信任的人。" }));
+  box.appendChild(el("div", { class: "row" }, input, copy));
+}
+async function doJoin(id) {
+  try {
+    const ref = fb.F.doc(fb.db, "lists", id);
+    const snap = await fb.F.getDoc(ref);
+    if (!snap.exists()) { toast("找不到這份清單，連結可能不完整"); return; }
+    const d = snap.data();
+    if (!d.members.includes(state.user.uid)) await fb.F.updateDoc(ref, { members: fb.F.arrayUnion(state.user.uid) });
+    state.listId = id;
+    try { localStorage.setItem(LS_LIST, id); } catch (e) {}
+    state.tab = "mine";
+    toast("已加入「" + d.name + "」");
+  } catch (e) { toast("加入失敗，請確認已登入再試一次"); }
+  state.pendingJoin = null;
+  history.replaceState(null, "", location.pathname);
+  $("joinBanner").hidden = true;
+}
+
+async function onAuth(user) {
+  state.user = user;
+  if (unsubLists) { unsubLists(); unsubLists = null; }
+  if (unsubPlaces) { unsubPlaces(); unsubPlaces = null; }
+  state.lists = []; state.cloudPlaces = []; state.listId = null;
+  if (user) {
+    showAuth(false);
+    if (state.pendingJoin) await doJoin(state.pendingJoin);
+    subscribeLists();
+  } else if (state.pendingJoin) {
+    const b = $("joinBanner"); b.hidden = false;
+    b.textContent = "有人邀請你加入一份共用清單。請先登入或註冊，登入後會自動加入。";
+    showAuth(true);
+  }
+  renderAll();
+}
+
+async function initFirebase() {
+  if (!firebaseConfig || !firebaseConfig.apiKey) return;
+  try {
+    const base = "https://www.gstatic.com/firebasejs/" + FB_VER + "/";
+    const [appM, authM, fsM] = await Promise.all([
+      import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")
+    ]);
+    const app = appM.initializeApp(firebaseConfig);
+    fb = { auth: authM.getAuth(app), db: fsM.getFirestore(app), A: authM, F: fsM };
+    authM.onAuthStateChanged(fb.auth, onAuth);
+  } catch (e) {
+    fb = null;
+    toast("共用功能連不上，先用單機模式");
+  }
+  renderAll();
+}
+
+/* ---------- 啟動 ---------- */
+$("fCity").value = lastCity();
+renderNow();
+renderAll();
+initFirebase();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
+</script>
+</body>
+</html>
